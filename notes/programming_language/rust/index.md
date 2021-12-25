@@ -1,6 +1,6 @@
 # Rust
 
-## Styles
+## Blog Style
 
 | Special cases | Presentation |
 | - | - |
@@ -12,16 +12,23 @@
 
 The quote syntax of md is used to indicate aside. Since amost all of the contents are from "The book", "quote" has no special meaning.
 
-## Contents
+## Basic
 
 - [Overview](overview.md)
 - [Project Management](project_management.md)
 - [Ownership & Lifetime](ownership_lifetime.md)
 - [Struct & Enum]()
-- [Collections]()
-- [Error Handling](Error_Handling.md)
 - [Generic Types & Trait]()
-- [Macro & Derive]()
+- [Error Handling](error_handling.md)
+- [Collections](collections.md)
+- [Iterators & Closures](iter_closure.md)
+- [rustling]()
+
+## Advanced topics
+
+- [Smart Pointer](smart_pointer.md)
+- [Macro]()
+- [Attribute]()
 
 ## Reference Sites
 - [The book](https://doc.rust-lang.org/book).

@@ -2,6 +2,19 @@
 
 ## Struct
 
+### Tuple struct
+
+Tuple structs have the added meaning the struct name provides but don’t have names associated with their fields. They are useful when you want to give the whole tuple a name and make the tuple be a different type from other tuples, and naming each field as in a regular struct would be verbose or redundant.
+
+~~~rust
+struct Color(i32, i32, i32);
+struct Point(i32, i32, i32);
+
+let black = Color(0, 0, 0);
+let origin = Point(0, 0, 0);
+~~~
+
+
 ## Enum
 
 
@@ -52,6 +65,11 @@ match dice_roll {
 > #### Question
 > 
 > Does match take the ownership? The answer is yes.
+
+> #### The value of `match` arms
+> 
+> The "arms" are seperated by comma or curly bracket. All "arms" has to share the same value type. As for the above code, all arm "return" type `()` .
+
 
 
 ### Concise Control Flow with `if let`
