@@ -14,6 +14,54 @@ let black = Color(0, 0, 0);
 let origin = Point(0, 0, 0);
 ~~~
 
+### Lifetime Annotations in Struct Definitions
+
+It’s possible for structs to hold references, but in that case we would need to add a lifetime annotation on every reference in the struct’s definition.
+
+~~~rust
+struct ImportantExcerpt<'a> {
+    part: &'a str,
+}
+
+fn main() {
+    let novel = String::from("Call me Ishmael. Some years ago...");
+    let first_sentence = novel.split('.').next().expect("Could not find a '.'");
+    let i = ImportantExcerpt {
+        part: first_sentence,
+    };
+}
+~~~
+
+The above annotation means an instance of `ImportantExcerpt` can’t outlive the reference it holds in its `part` field.
+
+### Lifetime in `impl` Blocks
+
+Lifetime names for struct fields always need to be declared after the impl keyword and then used after the struct’s name, because those lifetimes are part of the struct’s type.
+
+~~~rust
+impl<'a> ImportantExcerpt<'a> {
+    fn level(&self) -> i32 {
+        3
+    }
+}
+~~~
+
+In method signatures inside the impl block, references might be tied to the lifetime of references in the struct’s fields, or they might be independent. In addition, the lifetime elision rules often make it so that lifetime annotations aren’t necessary in method signatures.
+
+> Question: when using lifetime elision, how can parameter's lifetime get related with the struct's lifetime declaration?
+> 
+> There must be some tricks to bind them together. For example, the snippet below can not pass compilation.
+> ~~~rust
+> impl<'b> ImportantExcerpt<'b> {
+>    fn level(&'a self) -> i32 {
+>        3
+>    }
+> }
+> ~~~
+> But if replace `'a` with `'b` , it works. 
+
+
+
 
 ## Enum
 
@@ -98,26 +146,3 @@ if let Coin::Quarter(info) = coin {
 }
 ~~~
 
-### Option
-The problem with null values is that if you try to use a null value as a not-null value, you’ll get an error of some kind. Because this null or not-null property is pervasive, it’s extremely easy to make this kind of error.
-
-As such, Rust does not have nulls, but it does have an enum that can encode the concept of a value being present or absent. This enum is `Option<T>`
-
-~~~rust
-enum Option<T> {
-    None,
-    Some(T),
-}
-~~~
-> Generic Type
-> 
-> The `<T>` syntax is a feature of Rust we haven’t talked about yet. It’s a generic type parameter while We'll discuss later. It's just like the generic type used in C++.
-
-> The `Option<T>` enum is so useful that it’s even included in the prelude; you don’t need to bring it into scope explicitly. In addition, so are its variants: you can use `Some` and `None` directly without the `Option::` prefix.
-
-~~~rust
-let some_number = Some(5);
-let some_string = Some("a string");
-
-let absent_number: Option<i32> = None;
-~~~

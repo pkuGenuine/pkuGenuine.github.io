@@ -149,6 +149,17 @@ println!("{}", r3);
 > ~~~
 > It works, probably references are mere pointers and can be copied easily.
 
+There is one more important rule: when the value is borrowed, the owner can not modify it! The snippet below <u>**CAN NOT**</u> pass compilation checking.
+
+~~~rust
+fn main() {
+    let mut x = 4;
+	let y = &mut x;         //  y's scope starts at here
+	x = 5;                  //  within a reference's scope, x can not be modified
+	println!("{}", *y);     //  y's scope ends
+}
+~~~
+
 > #### Aside
 > 
 > ~~~rust
@@ -302,20 +313,3 @@ If the compiler gets to the end of the three rules and there are still reference
 ### The Static Lifetime
 
 One special lifetime we need to discuss is `'static`, which means that this reference can live for the entire duration of the program. All string literals have the `'static` lifetime.
-
-
-### Lifetime Annotations in Struct Definitions
-
-TODO: Move to struct section
-
-It’s possible for structs to hold references, but in that case we would need to add a lifetime annotation on every reference in the struct’s definition.
-
-### Lifetime in `impl` Blocks
-
-TODO: Move to struct section
-
-
-
-### Generic Type Parameters, Trait Bounds, and Lifetimes Together
-
-TODO: Move to Generic Type

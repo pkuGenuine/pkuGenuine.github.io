@@ -27,40 +27,7 @@ Below is some abstract from [Rust Reference Document](https://doc.rust-lang.org/
 
 ## Built-in Attributes
 
-### Testing
-
-The `test` attribute marks a function to be executed as a test. These functions are only compiled when in test mode. 
-
-Test functions must be free, monomorphic functions that take no arguments, and the return type must be `()` or `Result<(), E> where E: Error` .
-
-> Notes: 
-> 
-> The implementation of which return types are allowed is determined by the unstable Termination trait.
-> 
-> The test mode is enabled by passing the --test argument to rustc or using cargo test.
-
-~~~rust
-#[test]
-fn test_the_thing() -> io::Result<()> {
-    let state = setup_the_thing()?; // expected to succeed
-    do_the_thing(&state)?;          // expected to succeed
-    Ok(())
-}
-~~~
-
-A function annotated with the `test` attribute can also be annotated with the `ignore` attribute, which tells the test harness to not execute that function as a test. It will still be compiled when in test mode.
-
-A function annotated with the `test` attribute that returns `()` can also be annotated with the `should_panic` attribute.
-
-~~~rust
-#[test]
-#[should_panic(expected = "values don't match")]
-fn mytest() {
-    assert_eq!(1, 2, "values don't match");
-}
-~~~
-
-## Derive
+### Derive
 The `derive` attribute allows new items to be automatically generated for data structures.
 
 ~~~rust
@@ -83,3 +50,77 @@ impl<T: PartialEq> PartialEq for Foo<T> {
     }
 }
 ~~~
+
+### Conditional compilation
+
+The `cfg` attribute conditionally includes the thing it is attached to based on a configuration predicate.
+
+~~~rust
+#[cfg(target_os = "macos")]
+fn macos_only() {
+  // ...
+}
+
+// This function is only included when either foo or bar is defined
+#[cfg(any(foo, bar))]
+fn needs_foo_or_bar() {
+  // ...
+}
+~~~
+
+The `cfg_attr` attribute conditionally includes attributes based on a configuration predicate.
+
+~~~rust
+#[cfg_attr(feature = "magic", sparkles, crackles)]
+fn bewitched() {}
+
+// When the `magic` feature flag is enabled, the above will expand to:
+#[sparkles]
+#[crackles]
+fn bewitched() {}
+~~~
+
+### Diagnostics
+The following attributes are used for controlling or generating diagnostic messages during compilation.
+
+#### Lint check attributes
+A lint check names a potentially undesirable coding pattern, such as unreachable code or omitted documentation. 
+
+~~~rust
+pub mod m1 {
+    // Missing documentation is ignored here
+    #[allow(missing_docs)]
+    pub fn undocumented_one() -> i32 { 1 }
+
+    // Missing documentation signals a warning here
+    #[warn(missing_docs)]
+    pub fn undocumented_too() -> i32 { 2 }
+
+    // Missing documentation signals an error here
+    #[deny(missing_docs)]
+    pub fn undocumented_end() -> i32 { 3 }
+}
+~~~
+
+The `deprecated` attribute marks an item as deprecated. rustc will issue warnings on usage of `#[deprecated]` items. rustdoc will show item deprecation, including the since version and note, if available.
+
+The `must_use` attribute is used to issue a diagnostic warning when a value is not "used". It can be applied to user-defined composite types (structs, enums, and unions), functions, and traits.
+
+### Modules
+The directories and files used for loading external file modules can be influenced with the `path` attribute.
+
+~~~rust
+#[path = "foo.rs"]
+mod c;
+~~~
+
+### Code generation
+
+The inline attribute suggests that a copy of the attributed function should be placed in the caller.
+
+- `#[inline]` suggests performing an inline expansion.
+- `#[inline(always)]` suggests that an inline expansion should always be performed.
+- `#[inline(never)]` suggests that an inline expansion should never be performed.
+
+### ABI, linking, symbols, and FFI
+Talk later.
