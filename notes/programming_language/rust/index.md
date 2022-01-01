@@ -33,8 +33,12 @@ The quote syntax of md is used to indicate aside. Since amost all of the content
 ## Advanced topics
 
 - [Unsafe Rust](unsafe.md)
-- [Advanced Traits]
+- [Advanced Traits](advance_trait.md)
 - [Macro](macro.md)
+
+## Simple Examples
+
+- [Building a Multithreaded Web Server]
 
 ## Reference Sites
 - [The book](https://doc.rust-lang.org/book).

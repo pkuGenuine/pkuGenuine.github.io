@@ -14,6 +14,61 @@ let black = Color(0, 0, 0);
 let origin = Point(0, 0, 0);
 ~~~
 
+### Ownership inside a Struct
+
+Inspect the snippet below. Notice that it <u>**CAN NOT**</u> be compiled.
+
+~~~rust
+#[cfg(test)]
+mod tests {
+
+    struct TEST_S {
+        x: String,
+        y: String,
+    }
+
+    #[test]
+    fn test() {
+
+        let x = String::from("x");
+        let y = String::from("y");
+
+        let mut t = TEST_S {
+            x,
+            y
+        };
+
+        test_inner(&mut t);
+
+    }
+
+    fn test_inner(t: &mut TEST_S) -> String {
+        t.x
+    }
+
+}
+~~~
+
+Function `test_inner` borrow the `t` with a mutable reference, and it tries to move the x out of the struct, which is not allowed. We can not move components of a struct with a mutable reference.
+
+An alternative is to use `Option` to wrap it. `Option::take()` to move ownership out and leave `None` on the place.
+
+~~~rust
+    // ...
+    struct TEST_S {
+        x: Option<String>,
+        y: Option<String>,
+    }
+
+    // ...
+    fn test_inner(t: &mut TEST_S) -> String {
+        t.x.take().unwrap()
+    }
+~~~
+
+
+
+
 ### Lifetime Annotations in Struct Definitions
 
 It’s possible for structs to hold references, but in that case we would need to add a lifetime annotation on every reference in the struct’s definition.
