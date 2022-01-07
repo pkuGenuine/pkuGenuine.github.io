@@ -34,6 +34,8 @@ The quote syntax of md is used to indicate aside. Since amost all of the content
 
 - [Unsafe Rust](unsafe.md)
 - [Advanced Traits](advance_trait.md)
+- [Advanced Types](advance_type.md)
+- [Advanced Functions & Closures](ad_func_closure.md)
 - [Macro](macro.md)
 
 ## Simple Examples
