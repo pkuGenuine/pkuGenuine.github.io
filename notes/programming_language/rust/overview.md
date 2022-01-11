@@ -39,12 +39,12 @@ Hello, world!
 ~~~rust
 let x = 5;
 let y: i8;
-let mut z: f32 = 3.4
+let mut z: f32 = 3.4;
 ~~~
 
-Rust is a static type language. Even though we don't specify the type of `x` above, the Rust will infer a type for it. In this case, it should be `i32` by default. If Rust can not figure out the type of a variable based on its inference rules, or discover a variable binds to multiple types, it will refuse to compile the code.
+Rust is a static type language. Even though we don't specify the type of `x` above, the Rust will infer a type for it. In this case, it should be `i32` . If Rust can not figure out the type of a variable based on its inference rules, or discover a variable binds to multiple types, it will refuse to compile the code.
 
-Variables can be either unmutable, by default, or mutable, specified with `mut` keyword. It is not allowed to change the value of an unmutable variable. For example, the code snippet below <u>**CAN NOT**</u> be compiled.
+Variables can be either unmutable, by default, or mutable, specified with `mut` keyword. It is not allowed to change the value of an unmutable variable. For example, the code snippet below **<u>CAN NOT</u>** be compiled.
 
 ~~~rust
 let x = 5;
@@ -61,7 +61,7 @@ let t = true;
 let f: bool = false;
 ~~~
 
-Unlike C/C++, Rust doesn't convert other scalar types to bool type automatically. For example, the code snippet below <u>**CAN NOT**</u> be compiled:
+Unlike C/C++, Rust doesn't convert other scalar types to bool type automatically. For example, the code snippet below **<u>CAN NOT</u>** be compiled:
 
 ~~~rust
 let t: i32 = 3;
@@ -80,7 +80,7 @@ let z = 'ℤ';
 let heart_eyed_cat = '😻';
 ~~~
 
-Rust’s char type is <u>**FOUR BYTES**</u> in size and represents a Unicode Scalar Value, which means it can represent a lot more than just ASCII.
+Rust’s char type is **<u>FOUR BYTES</u>** in size and represents a Unicode Scalar Value, which means it can represent a lot more than just ASCII.
 
 #### Tuple & List
 
@@ -91,7 +91,7 @@ let tup: (i32, f64, u8) = (500, 6.4, 1);
 let (x, y, z) = tup;
 ~~~
 
-Arrays in Rust are different from arrays in some other languages because arrays in Rust have a <u>**FIXED LENGTH**</u>, like tuples.
+Arrays in Rust are different from arrays in some other languages because arrays in Rust have a **<u>FIXED LENGTH</u>**, like tuples.
 
 ~~~rust
 let a = [1, 2, 3, 4, 5];
@@ -101,7 +101,7 @@ let b: [i32; 5] = [1, 2, 3, 4, 5];
 let c = [3; 5];
 ~~~
 
-If you write something like below, the compiler won't be happy as the type doesn't match.
+If you write something like below, the compiler **<u>WON'T</u>** be happy as the type doesn't match.
 
 ~~~rust
 let a: [i32; 3];
@@ -110,11 +110,11 @@ a = [4; 3]
 
 #### Where to Define Variables
 
-Actually you can only define variables with `let` inside a function. It is possible to define "global variables" in Rust, which we will talk about later with lifetime.
+Actually you can only define variables with `let` inside a function, which entitles the function to the ownership of that variable. It is possible to define "global variables" in Rust, which we will talk about later with lifetime.
 
 ###  Define functions and invoke
 
-Use `fn` keyword to define a function. Rust doesn't care where you define a function in a comlilation unit. For example: 
+Use `fn` keyword to define a function. Rust doesn't care where you define a function in a comlilation unit.
 
 ~~~rust
 fn main() {
@@ -126,9 +126,9 @@ fn another_function() {
 }
 ~~~
 
-We define `another_function` later, but we can still call it in `main` .
+We define `another_function` later, but we can still call it in `main`.
 
-A convention to remember: Rust code uses snake_case as the conventional style for function and variable names.
+A convention to remember: Rust code uses `snake_case` as the conventional style for function and variable names.
 
 #### Function Signatures
 Like C/C++, Rust requires specifying types in function signature. The syntax is similar to Python.
@@ -143,7 +143,9 @@ fn demon_signature(x: i32, y: u32) -> f32 {
 
 Function bodies are made up of a series of <u>statements</u> optionally ending in an <u>expression</u>.
 
-Statements are instructions that perform some action and do not return a value. Expressions evaluate to a resulting value.
+Expressions evaluate to a resulting value. Such as `5 + 6`, which is an expression that evaluates to the value `11`. Calling a function is also an expression, which evaluates to the function's return value.
+
+Statements are instructions that perform some action and do not return a value. 
 
 Creating a variable and assigning a value to it with the `let` keyword is a statement.
 
@@ -155,40 +157,14 @@ fn main() {
 
 Function definitions are also statements; the entire preceding example is a statement in itself. 
 
-Statements do not return values. Therefore, you can’t assign a `let` statement to another variable, as the following code tries to do; you’ll <u>**GET AN ERROR**</u>:
+In Rust, the return value of the function is synonymous with the value of the final expression in the block of the body of a function. However, you can also use `return` keyword as with C language.
 
-~~~rust
-fn main() {
-    let x = (let y = 6);
-}
-~~~
+We'll talk about more details about Statement & Expression later.
 
-Expressions evaluate to a value. Such as `5 + 6`, which is an expression that evaluates to the value `11` .
-
-Expressions can be part of statements: the `6` in the statement `let y = 6` ; is an expression that evaluates to the value `6` .
-
-> Question: If I don't misunderstand, adding an ending `;` makes an expression statement.
-
-Calling a function is an expression. Calling a macro is an expression. The block that we use to create new scopes, `{}`, is an expression. Control flow keywords like `if` and `loop` followed by a new scope are also expressions.
-
-> Aside: we'll talk about macro, scope and control flow keywords later.
-
-For example, below is an expression that evaluates to the value `2` :
-
-~~~rust
-{
-    let x = 1;
-    x + 1
-}
-~~~
-
-In Rust, the return value of the function is synonymous with the value of the final expression in the block of the body of a function. It is consistent with what we mentioned before: "Calling a function is an expression."
-
-BTW, if a block doesn't end with an expression, its return type will be `()` .
 
 ### Basic Macros
 
-We do outputs with `println!` and `eprintln!` macro. They write to the stdin and stderr, repectively. 
+We do outputs with `println!` and `eprintln!` macro. They write to stdin and stderr, repectively. 
 
 Use `{}` within the format string to output variable contents: 
 
@@ -210,16 +186,16 @@ fn main() {
         println!("condition was true");
     } else {
         println!("condition was false");
-    }
+    };
 
     while number != 0 {
         println!("{}!", number);
         number -= 1;
-    }
+    };
 }
 ~~~
 
-> Question: the blocks after `if` and `while` are both expressions. But usually we don't have to add `;` after the block. I suppose that, if the block returns `()` type, then it can be regarded as a statment. 
+> Aside: You don't have to add `;` after the `if-else` or `while` block. But they are blocks and in their essence expressions. When used as statements, I recommend to explicitly add the semicolon.
 
 Rust also has `loop` key word. The codes will continue execute until it encounters `break` key word.
 
@@ -268,7 +244,7 @@ let result = loop {
 };
 ~~~
 
-> Question: It should be impossible to return value from a while loop or for loop.
+> Question: It seems that you can only use `break` in `loop`. But it is allowed to use `return` in `for` or `while` blocks.
 
 ### Import "libraries" or "packages"
 
@@ -312,7 +288,7 @@ hello_cargo
 ~~~ 
 
 ### Building and Running a Cargo Project
-This command creates an executable file in <u>*target/debug/hello_cargo*</u>
+This command creates an executable file in *<u>target/debug/hello_cargo</u>*
 ~~~
 $ cargo build
 ~~~
@@ -324,9 +300,9 @@ Check whether the project can be built
 ~~~
 $ cargo check
 ~~~
-Compile with optimizations, create an executable in <u>*target/release*</u> instead of <u>*target/debug*</u>.
+Compile with optimizations, create an executable in *<u>target/release</u>* instead of *<u>target/debug</u>*.
 ~~~
 $ cargo build --release
 ~~~
 
-### Use cargo to Manage Packages
+Here, we only list the most basic usage of `cargo` to run the simplest code. We'll introduce more functionalities provided by `cargo`, like Use package management.

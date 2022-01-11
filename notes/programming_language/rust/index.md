@@ -5,11 +5,11 @@
 | Special cases | Presentation |
 | - | - |
 | Caution | <u><b>UNDERLINE BOLD CAPITAL</b></u> |
-| Important Concepts | <u>underline</u> |
-| file name or path  | <u><i>Underline and Italy</i></u> |
+| Concepts | <u>underline</u> |
+| File Name or Path  | <u><i>underline and Italy</i></u> |
 | Aside or Question | > quote |
-| function, command, crate, ... | `inline codes` |
-| hierarchy, example codes, ... | ~~~ code block ~~~ |
+| Function, Command, Crate, ... | `inline codes` |
+| Hierarchy, Example Codes, ... | ~~~ code block ~~~ |
 
 The quote syntax of md is used to indicate aside. Since amost all of the contents are from "The book", "quote" has no special meaning.
 
@@ -30,6 +30,7 @@ The quote syntax of md is used to indicate aside. Since amost all of the content
 - [Concurrency](threads.md)
 - [Patterns & Matching](pattern.md)
 
+
 ## Advanced topics
 
 - [Unsafe Rust](unsafe.md)
@@ -37,6 +38,7 @@ The quote syntax of md is used to indicate aside. Since amost all of the content
 - [Advanced Types](advance_type.md)
 - [Advanced Functions & Closures](ad_func_closure.md)
 - [Macro](macro.md)
+- [Statement & Expression](state_expr.md)
 
 ## Simple Examples
 

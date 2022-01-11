@@ -313,3 +313,20 @@ If the compiler gets to the end of the three rules and there are still reference
 ### The Static Lifetime
 
 One special lifetime we need to discuss is `'static`, which means that this reference can live for the entire duration of the program. All string literals have the `'static` lifetime.
+
+You can also declare your own static variables, which are similar to global variables in C. Notice that they are declared out of the function and their ownerships are not possessed by any specific function. 
+
+~~~rust
+static t: u32 = 0;
+static mut LEVELS: u32 = 0;
+
+// This violates the idea of no shared state, and this doesn't internally
+// protect against races, so this function is `unsafe`
+unsafe fn bump_levels_unsafe1() -> u32 {
+    let ret = LEVELS;
+    LEVELS += 1;
+    return ret;
+}
+~~~
+
+However, you can not change the value of a static mutable variable plainly. As the notation indicates, it can only be used in "unsafe rust", which we'll discuss later. 

@@ -1,7 +1,8 @@
 # Project Management
 
-
 ## Module system
+
+Rust has a number of features that allow you to manage your code’s organization, including which details are exposed, which details are private, and what names are in each scope in your programs. These features, sometimes collectively referred to as the module system, include:
 
 - Packages: A Cargo feature that lets you build, test, and share crates
 - Crates: A tree of modules that produces a library or executable
@@ -11,11 +12,13 @@
 ### Packages and Crates
 A crate is a binary or library. The crate root is a source file that the Rust compiler starts from and makes up the root module of your crate. 
 
-A package is one or more crates that provide a set of functionality. A package contains a <u>*Cargo.toml*</u> file that describes how to build those crates.
+A package is one or more crates that provide a set of functionality. A package contains a *<u>Cargo.toml</u>* file that describes how to build those crates.
+
+> Aside: we you run cargo new, you are actually creating a new package.
 
 A package can contain at most one library crate. It can contain as many binary crates as you’d like.
 
-Cargo follows a convention that <u>*src/main.rs*</u> is the crate root of a binary crate with the same name as the package. Likewise, Cargo knows that if the package directory contains <u>*src/lib.rs*</u>, the package contains a library crate with the same name as the package, and <u>*src/lib.rs*</u> is its crate root.
+Cargo follows a convention that *<u>src/main.rs</u>* is the crate root of a binary crate with the same name as the package. Likewise, Cargo knows that if the package directory contains *<u>src/lib.rs</u>*, the package contains a library crate with the same name as the package, and *<u>src/lib.rs</u>* is its crate root.
 
 A package can have multiple binary crates by placing files in the src/bin directory: each file will be a separate binary crate.
 
@@ -42,13 +45,13 @@ The package name is `rs_test` and it has three crates:
 2.  A bin crate called `rs_test`. ( root: <u>*src/main.rs*</u> )
 3.  A bin crate called `bn_test`.    (root:  <u>*src/bin/bn_test.rs*</u> )
 
-If you run `cargo build`, there will be two executables in <u>*target/debug*</u> , <u>*rs_test*</u> and <u>*bn_test*</u> .
+If you run `cargo build`, there will be two executables in *<u>target/debug</u>* , *<u>rs_test</u>* and *<u>bn_test</u>* .
 
 #### About linking
 
-TODO do more investigation.
+TODO: do more investigation.
 
-我猜应该是每个 crate 独立编译，然后链接。lib crate 应该也会被编译产生一个文件。
+我猜应该是每个 crate 独立编译，然后链接。lib crate 应该也会被编译产生一个文件。在 *<u>Cargo.toml</u>* 引用其他 package 的时候，只能用 lib crate.
 
 ### Defining Modules to Control Scope and Privacy
 
@@ -152,7 +155,7 @@ pub fn eat_at_restaurant() {
     hosting::add_to_waitlist();
 }
 ~~~
-With `use` keyword, we bring the `crate::front_of_house::hosting` module into the scope of the `eat_at_restaurant` function so we only have to specify `hosting::add_to_waitlist` to call the `add_to_waitlist` function in `eat_at_restaurant` .
+With `use` keyword, we bring the `crate::front_of_house::hosting` module into the scope of the `eat_at_restaurant` function so we only have to specify `hosting::add_to_waitlist` to call the `add_to_waitlist` function in `eat_at_restaurant`.
 
 #### Idiomatic use Paths
 Keep the parent module when import a function. Like the snippets above. When it comes to struct and enum, it’s idiomatic to specify the full path. ( Unless it will cause a conflict. )
@@ -223,9 +226,9 @@ Rust lets you split a package into multiple crates. A crate is a compilation uni
 
 - A crate can be either a binary crate or a library crate. You can import codes from a library crate. As for binary crate, you can't import from it at all. 
 
-- The root of a lib crate is the <u>*src/lib.rs*</u> file and the crate's name is same as the package's.
+- The root of a lib crate is the *<u>src/lib.rs</u>* file and the crate's name is same as the package's.
 
-- The root of a bin crate is the <u>*src/main.rs*</u> file or any source code file under  <u>*src/bin/*</u> directory. The crate rooted at <u>*src/main.rs*</u> has the same name with the package. Others is the same as the file name.
+- The root of a bin crate is the *<u>src/main.rs</u>* file or any source code file under  *<u>src/bin/</u>* directory. The crate rooted at *<u>src/main.rs</u>* has the same name with the package. Others is the same as the file name.
 
 - Each bin crate can be compiled into an executable.
 
@@ -237,7 +240,11 @@ You can also split crate into modules.
 
 - At any scope, the code can reference sibling modules and ancestors without limitation.
 
-When you add a dependency into <u>*Cargo.toml*</u> file, you import the crate anywhere in your codes. ( Probably... )
+When you add a dependency into *<u>Cargo.toml</u>* file, you import the crate anywhere in your codes. ( Probably... )
+
+## More abount Cargo
+
+TODO
 
 ## Workspace
 
