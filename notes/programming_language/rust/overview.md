@@ -305,4 +305,4 @@ Compile with optimizations, create an executable in *<u>target/release</u>* inst
 $ cargo build --release
 ~~~
 
-Here, we only list the most basic usage of `cargo` to run the simplest code. We'll introduce more functionalities provided by `cargo`, like Use package management.
+We'll introduce more functionalities provided by `cargo`, like package management, later.

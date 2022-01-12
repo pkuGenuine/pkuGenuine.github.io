@@ -41,17 +41,12 @@ rs_test
 
 The package name is `rs_test` and it has three crates:
 
-1.  A lib crate called `rs_test`. ( root: <u>*src/lib.rs*</u> )
-2.  A bin crate called `rs_test`. ( root: <u>*src/main.rs*</u> )
-3.  A bin crate called `bn_test`.    (root:  <u>*src/bin/bn_test.rs*</u> )
+1.  A lib crate called `rs_test`. ( root: *<u>src/lib.rs</u>* )
+2.  A bin crate called `rs_test`. ( root: *<u>src/main.rs</u>* )
+3.  A bin crate called `bn_test`.    (root:  *<u>src/bin/bn_test.rs</u>* )
 
-If you run `cargo build`, there will be two executables in *<u>target/debug</u>* , *<u>rs_test</u>* and *<u>bn_test</u>* .
+If you run `cargo build`, there will be two executables in *<u>target/debug</u>* , *<u>rs_test</u>* and *<u>bn_test</u>*.
 
-#### About linking
-
-TODO: do more investigation.
-
-我猜应该是每个 crate 独立编译，然后链接。lib crate 应该也会被编译产生一个文件。在 *<u>Cargo.toml</u>* 引用其他 package 的时候，只能用 lib crate.
 
 ### Defining Modules to Control Scope and Privacy
 
@@ -101,7 +96,7 @@ use rs_test::test_lib;
 use rs_test::front_of_house::hosting
 ~~~
 
-Modules also control the privacy of items, which is whether an item can be used by outside code (public) or is an internal implementation detail and not available for outside use (private). For example, you can not `use rs_test::front_of_house::serving` in <u>*src/bin/bn_test.rs*</u> .
+Modules also control the privacy of items, which is whether an item can be used by outside code (public) or is an internal implementation detail and not available for outside use (private). For example, you can not `use rs_test::front_of_house::serving` in *<u>src/bin/bn_test.rs</u>* .
 
 Items in a parent module can’t use the private items inside child modules, but items in child modules can use the items in their ancestor modules. ( Siblings can also be referred to without limitation. )
 
@@ -132,7 +127,7 @@ mod back_of_house {
 
 #### `pub` or not
 
-Modules also control the privacy of items, which is whether an item can be used by outside code (public) or is an internal implementation detail and not available for outside use (private). For example, you can not `use rs_test::front_of_house::serving` in <u>*src/bin/bn_test.rs*</u> since `serving` is private.
+Modules also control the privacy of items, which is whether an item can be used by outside code (public) or is an internal implementation detail and not available for outside use (private). For example, you can not `use rs_test::front_of_house::serving` in *<u>src/bin/bn_test.rs</u>* since `serving` is private.
 
 We can also use pub to designate structs and enums as public, but there are a few extra details. If we use pub before a struct definition, we make the struct public, but the struct’s fields will still be private. We can make each field public or not on a case-by-case basis.
 
@@ -193,13 +188,43 @@ use std::collections::*;
 The glob operator is often used when testing to bring everything under test into the `tests` module; which we will discuss later.
 
 
-### Using External Packages
-Adding `rand` as a dependency in <u>*Cargo.toml*</u> tells Cargo to download the rand package and any dependencies from [crates.io](https://crates.io/) and make rand available to our project.
+### Using Lib Crates
 
-Note that the standard library ( `std` ) is also a crate that’s external to our package. Because the standard library is shipped with the Rust language, we don’t need to change <u>*Cargo.toml*</u> to include `std`.
+Note that the standard library, `std` is a crate that’s external to our package. However, because the standard library is shipped with the Rust language, we don’t need to explicitly "import" it. 
+
+Also, if there is lib crate in your package, you can `use` it in your bin crates without explicit "import".
+
+> Aside: You can't "import" any bin crates. And because there can be at most one lib crate in a package, importing a package has the same meaning with importing a lib crate.
+
+However, if you want to use other external crates, you have to explicitly "import" them by modifying the *<u>Cargo.toml</u>* file. For example:
+
+~~~toml
+[dependencies]
+rand = "0.9.0"
+~~~
+
+Adding `rand` as a dependency in *<u>Cargo.toml</u>* tells Cargo to download the rand package and any dependencies from [crates.io](https://crates.io/) and make rand available to our project.
+
+> Question: When bringing paths into scope with the `use` keyword, how to distinguish between library crate and bin crate as they may share the same name?
+> 
+> Probably the package name indicates the lib crate by default. If you want to indicate the current bin crate, use crate instead. For example:
+> 
+> ~~~rust
+> mod front_of_house {
+>   fn hosting() {}
+> }
+> pub use crate::front_of_house::hosting;
+> ~~~
+
+
+#### About linking
+
+TODO: do more investigation.
+
+我猜应该是每个 crate 独立编译，然后链接。lib crate 应该也会被编译产生一个文件。在 *<u>Cargo.toml</u>* 引用其他 package 的时候，只能用 lib crate.
 
 ### Separating Modules into Different Files
-Using a semicolon after mod `front_of_house` rather than using a block tells Rust to load the contents of the module from another file with the same name as the module.
+Using a semicolon after a mod declaration rather than using a block tells Rust to load the contents of the module from another file with the same name as the module.
 ~~~rust
 // src/lib.rs
 mod front_of_house;
@@ -240,20 +265,14 @@ You can also split crate into modules.
 
 - At any scope, the code can reference sibling modules and ancestors without limitation.
 
-When you add a dependency into *<u>Cargo.toml</u>* file, you import the crate anywhere in your codes. ( Probably... )
+When you add a dependency into *<u>Cargo.toml</u>* file, you can import the crate anywhere in your codes. ( Probably... )
 
 ## More abount Cargo
 
-TODO
+### Ensuring Reproducible Builds with the *<u>Cargo.lock</u>* File
 
-## Workspace
+Cargo has a mechanism that ensures you can rebuild the same artifact every time you or anyone else builds your code: Cargo will use only the versions of the dependencies you specified until you indicate otherwise.
 
-TODO
+When you build a project for the first time, Cargo figures out all the versions of the dependencies that fit the criteria and then writes them to the *<u>Cargo.lock</u>* file. When you build your project in the future, Cargo will see that the *<u>Cargo.lock</u>* file exists and use the versions specified there rather than doing all the work of figuring out versions again.
 
-## Test
-
-TODO
-
-## Documentation
-
-TODO
+When you do want to update a crate, Cargo provides another command, update, which will ignore the *<u>Cargo.lock</u>* file and figure out all the latest versions that fit your specifications in *<u>Cargo.toml</u>*. If that works, Cargo will write those versions to the *<u>Cargo.lock</u>* file.

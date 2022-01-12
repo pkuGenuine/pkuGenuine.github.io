@@ -29,6 +29,8 @@ The quote syntax of md is used to indicate aside. Since amost all of the content
 - [Trait Objects](trait_object.md)
 - [Concurrency](threads.md)
 - [Patterns & Matching](pattern.md)
+- [Documentation]
+- [Workspace]
 
 
 ## Advanced topics
