@@ -28,9 +28,8 @@ You can create a String from a string literal using the from function, like so:
 ~~~rust
 let s = String::from("hello");
 ~~~
-> #### Prelude
-> 
-> You can use `String` here without import because it is in the `std::prelude`.  
+
+> Aside: You can use `String` here without import because it is in the `std::prelude`.  
 > Browse this [document](https://doc.rust-lang.org/std/prelude/index.html) to learn more.
 
 ~~~rust
@@ -80,7 +79,26 @@ fn gives_ownership() -> String {
 ~~~
 
 ### Shadow
-TODO
+You can declare a new variable with the same name as a previous variable. Rustaceans say that the first variable is shadowed by the second.
+
+~~~rust
+fn main() {
+    let x = 5;
+
+    // Shadow in the same scope, the previous value is dropped.
+    let x = x + 1;
+
+    {
+        // Shadow in the inner scope, the previous value is not available.
+        let x = x * 2;
+        println!("The value of x in the inner scope is: {}", x);
+    }
+
+    println!("The value of x is: {}", x);
+}
+~~~
+
+The other difference between `mut` and shadowing is that because we’re effectively creating a new variable when we use the `let` keyword again, we can change the type of the value but reuse the same name.
 
 ## Reference
 You can define a function that has a reference to an object as a parameter instead of taking ownership of the value:
@@ -149,7 +167,7 @@ println!("{}", r3);
 > ~~~
 > It works, probably references are mere pointers and can be copied easily.
 
-There is one more important rule: when the value is borrowed, the owner can not modify it! The snippet below <u>**CAN NOT**</u> pass compilation checking.
+There is one more important rule: when the value is borrowed, the owner can not modify it! The snippet below **<u>CAN NOT</u>** pass compilation checking.
 
 ~~~rust
 fn main() {
@@ -216,7 +234,7 @@ Every reference in Rust has a lifetime, which is the scope for which that refere
 
 Here, `x` has the lifetime `'b`, which in this case is larger than `'a`. This means `r` can reference `x` because Rust knows that the reference in `r` will always be valid while `x` is valid.
 
-The snippet below <u>**CAN NOT**</u> be compiles.
+The snippet below **<u>CAN NOT</u>** be compiles.
 
 ~~~rust
 fn longest(x: &str, y: &str) -> &str {
@@ -257,7 +275,7 @@ One lifetime annotation by itself doesn’t have much meaning, because the annot
 
 The function signature now tells Rust that for some lifetime `'a`, the function takes two parameters, both of which are string slices that live at least as long as lifetime `'a`. The function signature also tells Rust that the string slice returned from the function will live at least as long as lifetime `'a`. In practice, it means that the lifetime of the reference returned by the longest function is the same as the smaller of the lifetimes of the references passed in.
 
-Let's demostrate the idea above by examing another <u>**WRONG**</u> example.
+Let's demostrate the idea above by examing another **<u>WRONG</u>** example.
 
 ~~~rust
 fn main() {
@@ -314,7 +332,7 @@ If the compiler gets to the end of the three rules and there are still reference
 
 One special lifetime we need to discuss is `'static`, which means that this reference can live for the entire duration of the program. All string literals have the `'static` lifetime.
 
-You can also declare your own static variables, which are similar to global variables in C. Notice that they are declared out of the function and their ownerships are not possessed by any specific function. 
+You can also declare your own static variables, which are similar to global variables in C.
 
 ~~~rust
 static t: u32 = 0;

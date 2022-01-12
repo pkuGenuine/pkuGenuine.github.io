@@ -2,6 +2,89 @@
 
 ## Struct
 
+Structs are similar to tuples, except that you’ll name each piece of data so it’s clear what the values mean. 
+
+### Basic usage
+
+~~~rust
+struct User {
+    active: bool,
+    username: String,
+    email: String,
+    sign_in_count: u64,
+}
+~~~
+
+To use a struct after we’ve defined it, we create an instance of that struct by specifying concrete values for each of the fields. To get a specific value from a struct, we can use dot notation.
+
+~~~rust
+fn main() {
+    let mut user1 = User {
+        email: String::from("someone@example.com"),
+        username: String::from("someusername123"),
+        active: true,
+        sign_in_count: 1,
+    };
+
+    user1.email = String::from("anotheremail@example.com");
+
+}
+~~~
+
+Rust provides the field init shorthand syntax to make the code more concise. If the variable name is the same as struct field name, you don't have to repeat it:
+
+~~~rust
+fn build_user(email: String, username: String) -> User {
+    User {
+        email,
+        username,
+        active: true,
+        sign_in_count: 1,
+    }
+}
+~~~
+
+Also, it’s often useful to create a new instance of a struct that uses most of an old instance’s values but changes some. You can do this using struct update syntax.
+
+~~~rust
+    let user2 = User {
+        email: String::from("another@example.com"),
+        ..user1
+    };
+~~~
+
+The syntax `..` specifies that the remaining fields not explicitly set should have the same value as the fields in the given instance.
+
+### Method Syntax
+
+Methods are similar to functions except that they’re defined within the context of a struct ( or an enum or a trait object which we'll cover later. )
+
+~~~rust
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+}
+~~~
+
+To define the function within the context of `Rectangle`, we start an impl (implementation) block for Rectangle. Everything within this impl block will be associated with the Rectangle type. 
+
+In the signature for area, we use `&self` instead of `rectangle: &Rectangle`. The `&self` is actually short for `self: &Self`. Within an `impl` block, the type `Self` is an alias for the type that the `impl` block is for. Methods must have a parameter named `self` of type `Self` for their first parameter, so Rust lets you abbreviate this with only the name self in the first parameter spot.
+
+> Aside: Rust doesn’t have an equivalent to the C's `->` operator. Instead, Rust has a feature called automatic referencing and dereferencing. 
+> 
+> When you call a method with `object.something()`, Rust automatically adds in `&`, `&mut`, or `*` so object matches the signature of the method.
+
+All functions defined within an `impl` block are called associated functions because they’re associated with the type named after the `impl`. We can define associated functions that don’t have `self` as their first parameter (and thus are not methods) because they don’t need an instance of the type to work with. 
+
+Associated functions that aren’t methods are often used for constructors that will return a new instance of the struct. We’ve already used one function like this, the `String::from` function, that’s defined on the `String` type.
+
+
 ### Tuple struct
 
 Tuple structs have the added meaning the struct name provides but don’t have names associated with their fields. They are useful when you want to give the whole tuple a name and make the tuple be a different type from other tuples, and naming each field as in a regular struct would be verbose or redundant.
@@ -12,6 +95,16 @@ struct Point(i32, i32, i32);
 
 let black = Color(0, 0, 0);
 let origin = Point(0, 0, 0);
+~~~
+
+### Unit Struct
+
+You can also define structs that don’t have any fields. 
+
+~~~rust
+    struct AlwaysEqual;
+
+    let subject = AlwaysEqual;
 ~~~
 
 ### Ownership inside a Struct
@@ -66,9 +159,6 @@ An alternative is to use `Option` to wrap it. `Option::take()` to move ownership
     }
 ~~~
 
-
-
-
 ### Lifetime Annotations in Struct Definitions
 
 It’s possible for structs to hold references, but in that case we would need to add a lifetime annotation on every reference in the struct’s definition.
@@ -88,6 +178,9 @@ fn main() {
 ~~~
 
 The above annotation means an instance of `ImportantExcerpt` can’t outlive the reference it holds in its `part` field.
+
+Note that structs with different lifetime annotations are different types.
+
 
 ### Lifetime in `impl` Blocks
 
@@ -113,14 +206,62 @@ In method signatures inside the impl block, references might be tied to the life
 >    }
 > }
 > ~~~
-> But if replace `'a` with `'b` , it works. 
+> But if replace `'a` with `'b`, it works. 
+
 
 
 
 
 ## Enum
 
+Enums are a feature in many languages, but their capabilities differ in each language. In C++, compiler will allocate integers for enum constants. But in Rust, enum types can contain data, which is sort of like unions.
 
+> Aside: Rust’s enums are most similar to algebraic data types in functional languages, such as Haskell.
+
+### Basic Usage
+C style usage:
+~~~rust
+enum IpAddrKind {
+    V4,
+    V6,
+}
+
+fn main() {
+    let four = IpAddrKind::V4;
+    let six = IpAddrKind::V6;
+
+    route(IpAddrKind::V4);
+    route(IpAddrKind::V6);
+}
+
+fn route(ip_kind: IpAddrKind) {}
+~~~
+
+We can also put data into enum types:
+
+~~~rust
+enum IpAddr {
+    V4(String),
+    V6(String),
+}
+
+fn main() {
+    let home = IpAddr::V4(String::from("127.0.0.1"));
+
+    let loopback = IpAddr::V6(String::from("::1"));
+}
+~~~
+
+It is also possible to put different data types into enum:
+
+~~~rust
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+~~~
 
 ### The `match` Control Flow Operator
 Rust has an extremely powerful control flow operator called `match` that allows you to compare a value against a series of patterns and then execute code based on which pattern matches. Patterns can be made up of literal values, variable names, wildcards, and many other things......
@@ -151,6 +292,10 @@ fn value_in_cents(coin: Coin) -> u8 {
 }
 ~~~
 
+Note that move occurs in the match arm ( To be precise, the `String` data inside enum variable `coin` is moved. Search [partial moves](https://doc.rust-lang.org/rust-by-example/scope/move/partial_move.html) for more info. ). You can no longer use variable `coin` as a whole. 
+
+
+
 ### Catch-all Patterns and the `_` Placeholder
 
 Matches in Rust are exhaustive: we must exhaust every last possibility in order for the code to be valid. However, it is possible to catch all the unlisted conditions with `other` or `_` .
@@ -165,15 +310,7 @@ match dice_roll {
 }
 ~~~
 
-> #### Question
-> 
-> Does match take the ownership? The answer is yes.
-
-> #### The value of `match` arms
-> 
-> The "arms" are seperated by comma or curly bracket. All "arms" has to share the same value type. As for the above code, all arm "return" type `()` .
-
-
+> Aside: `match` is also kind of control flow block. As with `if` block, it is an expression.
 
 ### Concise Control Flow with `if let`
 The syntax `if let` takes a pattern and an expression separated by an equal sign. It works the same way as a match, where the expression is given to the match and the pattern is its first arm.
